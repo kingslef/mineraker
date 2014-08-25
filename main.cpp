@@ -17,11 +17,9 @@ int main()
     sprite.setTexture(texture);
     sprite.setScale(sf::Vector2f(0.2f, .2f));
 
-    std::cout << "creating boxField" << std::endl;
     BoxField boxField("box.png", "box_pressed.png",
                       window.getSize().x / sprite.getGlobalBounds().width,
                       window.getSize().y / sprite.getGlobalBounds().height);
-    std::cout << boxField << std::endl;
 
     window.setVerticalSyncEnabled(true);
 
@@ -30,8 +28,25 @@ int main()
         sf::Event event;
         while (window.pollEvent(event))
         {
-            if (event.type == sf::Event::Closed)
+            switch (event.type)
+            {
+            case sf::Event::Closed:
                 window.close();
+                break;
+            case sf::Event::MouseButtonPressed:
+                if (event.mouseButton.button == sf::Mouse::Left)
+                {
+                    std::cout << "the left button was pressed on ("
+                              << event.mouseButton.x << ","
+                              << event.mouseButton.y << ")" << std::endl;
+
+                    boxField.press(sf::Vector2u(event.mouseButton.x,
+                                                event.mouseButton.y));
+                }
+                break;
+            default:
+                break;
+            }
         }
 
         window.clear();

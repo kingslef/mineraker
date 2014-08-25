@@ -17,6 +17,8 @@ public:
 
     void draw(sf::RenderWindow & window);
 
+    void press(const sf::Vector2u & position);
+
     friend std::ostream & operator<<(std::ostream & out, const BoxField & field);
 
     class Box {

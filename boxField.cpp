@@ -51,6 +51,23 @@ void BoxField::draw(sf::RenderWindow & window)
     }
 }
 
+void BoxField::press(const sf::Vector2u & position)
+{
+    unsigned int height = box_sprite.getGlobalBounds().height;
+    unsigned int width = box_sprite.getGlobalBounds().width;
+
+    unsigned int x = position.x / width
+        + (position.x % width ? 1 : 0)
+        - 1;
+    unsigned int y = position.y / height
+        + (position.y % height ? 1 : 0)
+        - 1;
+
+    std::cout << "box: (" << x << "," << y << ")" << std::endl;
+
+    field[x][y].pressed = !field[x][y].pressed;
+}
+
 std::ostream & operator<<(std::ostream & out, const BoxField & boxField)
 {
     for (auto & row : boxField.field) {
