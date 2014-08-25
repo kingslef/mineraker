@@ -36,6 +36,21 @@ BoxField::BoxField(const char * box_texture_file,
     }
 }
 
+void BoxField::draw(sf::RenderWindow & window)
+{
+    float height = box_sprite.getGlobalBounds().height;
+    float width = box_sprite.getGlobalBounds().width;
+
+    for (auto & row : field) {
+        for (auto & box : row) {
+            sf::Vector2f pos(box.position.x * width, box.position.y * height);
+            auto & sprite = (box.pressed ? pressed_box_sprite : box_sprite);
+            sprite.setPosition(pos);
+            window.draw(sprite);
+        }
+    }
+}
+
 std::ostream & operator<<(std::ostream & out, const BoxField & boxField)
 {
     for (auto & row : boxField.field) {

@@ -15,6 +15,8 @@ public:
              unsigned int width,
              unsigned int height);
 
+    void draw(sf::RenderWindow & window);
+
     friend std::ostream & operator<<(std::ostream & out, const BoxField & field);
 
     class Box {
@@ -25,14 +27,14 @@ public:
 
         friend std::ostream & operator<<(std::ostream & out, const Box & box);
 
-    private:
         sf::Vector2u position;
         bool pressed = false;
+
+    private:
         bool mine = false;
     };
 
 private:
-
     sf::Sprite box_sprite;
     sf::Sprite pressed_box_sprite;
 

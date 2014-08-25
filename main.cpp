@@ -23,10 +23,6 @@ int main()
                       window.getSize().y / sprite.getGlobalBounds().height);
     std::cout << boxField << std::endl;
 
-    sf::Vector2f startPosition = sprite.getPosition();
-    float height = sprite.getGlobalBounds().height;
-    float width = sprite.getGlobalBounds().width;
-
     window.setVerticalSyncEnabled(true);
 
     while (window.isOpen())
@@ -40,18 +36,7 @@ int main()
 
         window.clear();
 
-        sf::Vector2u windowSize = window.getSize();
-        unsigned int windowX = windowSize.x;
-        unsigned int windowY = windowSize.y;
-
-        for (float x = startPosition.x; x < windowX; x += width)
-        {
-            for (float y = startPosition.y; y < windowY; y += height)
-            {
-                sprite.setPosition(sf::Vector2f(x, y));
-                window.draw(sprite);
-            }
-        }
+        boxField.draw(window);
 
         window.display();
     }
