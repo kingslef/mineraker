@@ -1,3 +1,5 @@
+#include "boxField.hpp"
+
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
@@ -14,6 +16,12 @@ int main()
     sf::Sprite sprite;
     sprite.setTexture(texture);
     sprite.setScale(sf::Vector2f(0.2f, .2f));
+
+    std::cout << "creating boxField" << std::endl;
+    BoxField boxField("box.png", "box_pressed.png",
+                      window.getSize().x / sprite.getGlobalBounds().width,
+                      window.getSize().y / sprite.getGlobalBounds().height);
+    std::cout << boxField << std::endl;
 
     sf::Vector2f startPosition = sprite.getPosition();
     float height = sprite.getGlobalBounds().height;

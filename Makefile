@@ -14,7 +14,7 @@ LDLIBS=$(LIBDIR) -lsfml-graphics -lsfml-window -lsfml-system
 
 all: minerake
 
-minerake: main.cpp
+minerake: main.cpp boxField.cpp
 	$(CXX) $^ $(CFLAGS) $(LDLIBS) -o $@
 
 .PHONY: clean
