@@ -178,6 +178,22 @@ const sf::Vector2u BoxField::calculatePressedBox(const sf::Vector2u & position) 
     return sf::Vector2u(x, y);
 }
 
+void BoxField::mark(const sf::Vector2u & position)
+{
+    if (!game_over) {
+        const sf::Vector2u & box_pos = calculatePressedBox(position);
+
+        std::cout << "box: (" << box_pos.x << "," << box_pos.y << ")" << std::endl;
+
+        // This shouldn't be possible
+        if (box_pos.x >= width || box_pos.y >= height) {
+            throw std::invalid_argument("Invalid press location");
+        }
+
+        auto & box = field[box_pos.x][box_pos.y];
+        box.marked = !box.marked;
+}
+
 void BoxField::press(const sf::Vector2u & position)
 {
     if (!game_over) {
@@ -191,8 +207,6 @@ void BoxField::press(const sf::Vector2u & position)
         }
 
         auto & box = field[box_pos.x][box_pos.y];
-
-        //box.pressed = true;
 
         if (!box.mine) {
             // If user didn't press a mine, press all adjacent non-mine boxes.

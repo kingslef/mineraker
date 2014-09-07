@@ -22,6 +22,7 @@ public:
     void draw(sf::RenderWindow & window);
 
     void press(const sf::Vector2u & position);
+    void mark(const sf::Vector2u & position);
 
     void reset();
 
