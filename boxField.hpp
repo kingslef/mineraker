@@ -55,6 +55,8 @@ private:
     std::size_t box_height;
 
     std::vector<std::vector<BoxField::Box>> field;
+
+    bool game_over = false;
 };
 
 #endif

@@ -79,6 +79,13 @@ void BoxField::draw(sf::RenderWindow & window)
                 sprite = box_sprite;
             }
 
+            // If game is over, show all mines
+            if (game_over) {
+                if (box.mine && !box.pressed) {
+                    sprite = mine_sprite;
+                }
+            }
+
             sprite.setPosition(pos);
             window.draw(sprite);
         }
@@ -87,84 +94,86 @@ void BoxField::draw(sf::RenderWindow & window)
 
 void BoxField::press(const sf::Vector2u & position)
 {
-    /*
-     * Calculate to which box is pressed with given position. E.g. if position.x
-     * is somewhere between [0,1), then pressed box should be in first column.
-     */
-    unsigned int x = position.x / box_width
-        + (position.x % box_width ? 1 : 0)
-        - 1;
-    unsigned int y = position.y / box_height
-        + (position.y % box_height ? 1 : 0)
-        - 1;
+    if (!game_over) {
+        /*
+         * Calculate to which box is pressed with given position. E.g. if position.x
+         * is somewhere between [0,1), then pressed box should be in first column.
+         */
+        unsigned int x = position.x / box_width
+            + (position.x % box_width ? 1 : 0)
+            - 1;
+        unsigned int y = position.y / box_height
+            + (position.y % box_height ? 1 : 0)
+            - 1;
 
-    std::cout << "box: (" << x << "," << y << ")" << std::endl;
+        std::cout << "box: (" << x << "," << y << ")" << std::endl;
 
-    // This shouldn't be possible
-    if (x >= width || y >= height) {
-        throw std::invalid_argument("Invalid press location");
-    }
-
-    auto & box = field[x][y];
-
-    //box.pressed = true;
-
-    if (!box.mine) {
-        // If user didn't press a mine, press all adjacent non-mine boxes.
-        // FIXME: ugly
-        for (int j = y; j >= 0; j--) {
-            auto & adj_box = field[x][j];
-            if (adj_box.mine || adj_box.pressed) {
-                break;
-            }
-            adj_box.pressed = true;
-
-
-            for (int i = x + 1; i < width; i++) {
-                auto & adj_box = field[i][j];
-                if (adj_box.mine || adj_box.pressed) {
-                    break;
-                }
-                adj_box.pressed = true;
-            }
-
-            for (int i = x - 1; i >= 0; i--) {
-                auto & adj_box = field[i][j];
-                if (adj_box.mine || adj_box.pressed) {
-                    break;
-                }
-                adj_box.pressed = true;
-            }
+        // This shouldn't be possible
+        if (x >= width || y >= height) {
+            throw std::invalid_argument("Invalid press location");
         }
 
-        for (int j = y + 1; j < height; j++) {
-            auto & adj_box = field[x][j];
-            if (adj_box.mine || adj_box.pressed) {
-                break;
-            }
-            adj_box.pressed = true;
+        auto & box = field[x][y];
 
-            for (int i = x + 1; i < width; i++) {
-                auto & adj_box = field[i][j];
+        //box.pressed = true;
+
+        if (!box.mine) {
+            // If user didn't press a mine, press all adjacent non-mine boxes.
+            // FIXME: ugly
+            for (int j = y; j >= 0; j--) {
+                auto & adj_box = field[x][j];
                 if (adj_box.mine || adj_box.pressed) {
                     break;
                 }
                 adj_box.pressed = true;
+
+
+                for (int i = x + 1; i < width; i++) {
+                    auto & adj_box = field[i][j];
+                    if (adj_box.mine || adj_box.pressed) {
+                        break;
+                    }
+                    adj_box.pressed = true;
+                }
+
+                for (int i = x - 1; i >= 0; i--) {
+                    auto & adj_box = field[i][j];
+                    if (adj_box.mine || adj_box.pressed) {
+                        break;
+                    }
+                    adj_box.pressed = true;
+                }
             }
 
-            for (int i = x - 1; i >= 0; i--) {
-                auto & adj_box = field[i][j];
+            for (int j = y + 1; j < height; j++) {
+                auto & adj_box = field[x][j];
                 if (adj_box.mine || adj_box.pressed) {
                     break;
                 }
                 adj_box.pressed = true;
+
+                for (int i = x + 1; i < width; i++) {
+                    auto & adj_box = field[i][j];
+                    if (adj_box.mine || adj_box.pressed) {
+                        break;
+                    }
+                    adj_box.pressed = true;
+                }
+
+                for (int i = x - 1; i >= 0; i--) {
+                    auto & adj_box = field[i][j];
+                    if (adj_box.mine || adj_box.pressed) {
+                        break;
+                    }
+                    adj_box.pressed = true;
+                }
             }
+        } else {
+            box.pressed = true;
+            game_over = true;
         }
-    } else {
-        box.pressed = true;
     }
 }
-
 std::ostream & operator<<(std::ostream & out, const BoxField & boxField)
 {
     for (auto & row : boxField.field) {
