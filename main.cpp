@@ -8,8 +8,8 @@ int main()
     sf::RenderWindow window(sf::VideoMode(800, 600), "Minerake",
                             sf::Style::Titlebar | sf::Style::Close);
 
-    BoxField boxField("box.png", "box_pressed.png",
-                      "mine.png", "mine_pressed.png", 250,
+    BoxField boxField("textures/box.png", "textures/box_pressed.png",
+                      "textures/mine.png", "textures/mine_pressed.png", 250,
                       window.getSize().x, window.getSize().y);
 
     window.setVerticalSyncEnabled(true);
