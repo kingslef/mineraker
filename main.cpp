@@ -5,7 +5,8 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Minerake");
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Minerake",
+                            sf::Style::Titlebar | sf::Style::Close);
 
     sf::Texture texture;
     if (!texture.loadFromFile("box.png"))
