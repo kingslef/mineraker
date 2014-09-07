@@ -10,7 +10,7 @@ int main()
 
     BoxField boxField("textures/box.png", "textures/box_pressed.png",
                       "textures/mine.png", "textures/mine_pressed.png",
-                      "textures/arial.ttf", 250,
+                      "textures/flag.png", "textures/arial.ttf", 250,
                       window.getSize().x, window.getSize().y);
 
     window.setVerticalSyncEnabled(true);
@@ -37,7 +37,12 @@ int main()
                 }
                 else if (event.mouseButton.button == sf::Mouse::Right)
                 {
-                    boxField.reset();
+                    if (boxField.isOver()) {
+                        boxField.reset();
+                    } else {
+                        boxField.mark(sf::Vector2u(event.mouseButton.x,
+                                                   event.mouseButton.y));
+                    }
                 }
                 break;
             default:
