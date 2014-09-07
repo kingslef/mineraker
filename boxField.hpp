@@ -42,6 +42,9 @@ public:
     };
 
 private:
+
+    const sf::Vector2u calculatePressedBox(const sf::Vector2u & position) const;
+
     sf::Sprite box_sprite;
     sf::Sprite pressed_box_sprite;
     sf::Sprite mine_sprite;

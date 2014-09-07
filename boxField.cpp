@@ -162,43 +162,50 @@ void BoxField::draw(sf::RenderWindow & window)
     }
 }
 
+const sf::Vector2u BoxField::calculatePressedBox(const sf::Vector2u & position) const
+{
+    /**
+     * Calculate to which box is pressed with given position. E.g. if position.x
+     * is somewhere between [0,1), then pressed box should be in first column.
+     */
+    unsigned int x = position.x / box_width
+        + (position.x % box_width ? 1 : 0)
+        - 1;
+    unsigned int y = position.y / box_height
+        + (position.y % box_height ? 1 : 0)
+        - 1;
+
+    return sf::Vector2u(x, y);
+}
+
 void BoxField::press(const sf::Vector2u & position)
 {
     if (!game_over) {
-        /*
-         * Calculate to which box is pressed with given position. E.g. if position.x
-         * is somewhere between [0,1), then pressed box should be in first column.
-         */
-        unsigned int x = position.x / box_width
-            + (position.x % box_width ? 1 : 0)
-            - 1;
-        unsigned int y = position.y / box_height
-            + (position.y % box_height ? 1 : 0)
-            - 1;
+        const sf::Vector2u & box_pos = calculatePressedBox(position);
 
-        std::cout << "box: (" << x << "," << y << ")" << std::endl;
+        std::cout << "box: (" << box_pos.x << "," << box_pos.y << ")" << std::endl;
 
         // This shouldn't be possible
-        if (x >= width || y >= height) {
+        if (box_pos.x >= width || box_pos.y >= height) {
             throw std::invalid_argument("Invalid press location");
         }
 
-        auto & box = field[x][y];
+        auto & box = field[box_pos.x][box_pos.y];
 
         //box.pressed = true;
 
         if (!box.mine) {
             // If user didn't press a mine, press all adjacent non-mine boxes.
             // FIXME: ugly
-            for (int j = y; j >= 0; j--) {
-                auto & adj_box = field[x][j];
+            for (int j = box_pos.y; j >= 0; j--) {
+                auto & adj_box = field[box_pos.x][j];
                 if (adj_box.mine || adj_box.pressed) {
                     break;
                 }
                 adj_box.pressed = true;
 
 
-                for (int i = x + 1; i < width; i++) {
+                for (int i = box_pos.x + 1; i < width; i++) {
                     auto & adj_box = field[i][j];
                     if (adj_box.mine || adj_box.pressed) {
                         break;
@@ -206,7 +213,7 @@ void BoxField::press(const sf::Vector2u & position)
                     adj_box.pressed = true;
                 }
 
-                for (int i = x - 1; i >= 0; i--) {
+                for (int i = box_pos.x - 1; i >= 0; i--) {
                     auto & adj_box = field[i][j];
                     if (adj_box.mine || adj_box.pressed) {
                         break;
@@ -215,14 +222,14 @@ void BoxField::press(const sf::Vector2u & position)
                 }
             }
 
-            for (int j = y + 1; j < height; j++) {
-                auto & adj_box = field[x][j];
+            for (int j = box_pos.y + 1; j < height; j++) {
+                auto & adj_box = field[box_pos.x][j];
                 if (adj_box.mine || adj_box.pressed) {
                     break;
                 }
                 adj_box.pressed = true;
 
-                for (int i = x + 1; i < width; i++) {
+                for (int i = box_pos.x + 1; i < width; i++) {
                     auto & adj_box = field[i][j];
                     if (adj_box.mine || adj_box.pressed) {
                         break;
@@ -230,7 +237,7 @@ void BoxField::press(const sf::Vector2u & position)
                     adj_box.pressed = true;
                 }
 
-                for (int i = x - 1; i >= 0; i--) {
+                for (int i = box_pos.x - 1; i >= 0; i--) {
                     auto & adj_box = field[i][j];
                     if (adj_box.mine || adj_box.pressed) {
                         break;
