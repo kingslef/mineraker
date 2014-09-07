@@ -14,6 +14,7 @@ public:
              const char * pressed_box_texture_file,
              const char * mine_texture_file,
              const char * pressed_mine_texture_file,
+             const char * font_file,
              unsigned int mines,
              unsigned int width,
              unsigned int height);
@@ -37,6 +38,7 @@ public:
         sf::Vector2u position;
         bool pressed = false;
         bool mine = false;
+        unsigned int mines_touching = 0;
     };
 
 private:
@@ -49,6 +51,8 @@ private:
     sf::Texture pressed_box_texture;
     sf::Texture mine_texture;
     sf::Texture pressed_mine_texture;
+
+    sf::Font font;
 
     std::size_t width;
     std::size_t height;

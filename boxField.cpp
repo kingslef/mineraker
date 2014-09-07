@@ -12,6 +12,7 @@ BoxField::BoxField(const char * box_texture_file,
                    const char * pressed_box_texture_file,
                    const char * mine_texture_file,
                    const char * pressed_mine_texture_file,
+                   const char * font_file,
                    unsigned int mines, unsigned int w, unsigned int h)
 {
     if (!box_texture.loadFromFile(box_texture_file)) {
@@ -29,6 +30,10 @@ BoxField::BoxField(const char * box_texture_file,
 
     if (!pressed_mine_texture.loadFromFile(pressed_mine_texture_file)) {
         throw std::invalid_argument("Couldn't open the pressed mine texture");
+    }
+
+    if (!font.loadFromFile(font_file)) {
+        throw std::invalid_argument("Couldn't open the font");
     }
 
     box_sprite.setTexture(box_texture);
@@ -54,6 +59,7 @@ BoxField::BoxField(const char * box_texture_file,
     for (unsigned int i = 0; i < width; i++) {
         std::vector<Box> row;
         for (unsigned int j = 0; j < height; j++) {
+            // FIXME: move to a function
             bool is_mine = mines ? distribution(generator) : false;
             if (is_mine) {
                 std::cout << "mine in (" << i << "," << j << ")" << std::endl;
@@ -63,6 +69,60 @@ BoxField::BoxField(const char * box_texture_file,
             row.push_back(Box(i, j, is_mine));
         }
         field.push_back(row);
+    }
+
+    // FIXME: move to a function.
+    // Calculate how many mines a touching each box.
+    for (unsigned int i = 0; i < width; i++) {
+        for (unsigned int j = 0; j < height; j++) {
+            auto & box = field[i][j];
+            if (box.mine) {
+                continue;
+            }
+
+            for (int x = -1; x <= 1; x++) {
+                if (i == 0 || i + x >= width) {
+                    continue;
+                }
+                for (int y = -1; y <= 1; y++) {
+                    if (j == 0 || j + y >= height) {
+                        continue;
+                    }
+                    if (field[i + x][j + y].mine) {
+                        box.mines_touching++;
+                    }
+                }
+            }
+        }
+    }
+}
+
+namespace {
+    // FIXME: not the best way to do this
+    const char * mines_to_text(unsigned int mines)
+    {
+        switch(mines) {
+        case 8:
+            return "8";
+        case 7:
+            return "7";
+        case 6:
+            return "6";
+        case 5:
+            return "5";
+        case 4:
+            return "4";
+        case 3:
+            return "3";
+        case 2:
+            return "2";
+        case 1:
+            return "1";
+        case 0:
+            return "";
+        default:
+            return "x";
+        }
     }
 }
 
@@ -89,6 +149,15 @@ void BoxField::draw(sf::RenderWindow & window)
 
             sprite.setPosition(pos);
             window.draw(sprite);
+
+            if (box.pressed && !box.mine) {
+                // FIXME: set default font size somewhere
+                sf::Text text(mines_to_text(box.mines_touching), font, 20);
+                text.setColor(sf::Color::Black);
+                // Text is not quite centered so it has to be moved a little
+                text.setPosition(pos - sf::Vector2f(-4, 3));
+                window.draw(text);
+            }
         }
     }
 }

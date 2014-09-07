@@ -9,7 +9,8 @@ int main()
                             sf::Style::Titlebar | sf::Style::Close);
 
     BoxField boxField("textures/box.png", "textures/box_pressed.png",
-                      "textures/mine.png", "textures/mine_pressed.png", 250,
+                      "textures/mine.png", "textures/mine_pressed.png",
+                      "textures/arial.ttf", 250,
                       window.getSize().x, window.getSize().y);
 
     window.setVerticalSyncEnabled(true);
