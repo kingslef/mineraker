@@ -174,6 +174,20 @@ void BoxField::press(const sf::Vector2u & position)
         }
     }
 }
+
+void BoxField::reset()
+{
+    if (game_over) {
+        for (auto & row : field) {
+            for (auto & box : row) {
+                box.pressed = false;
+            }
+        }
+
+        game_over = false;
+    }
+}
+
 std::ostream & operator<<(std::ostream & out, const BoxField & boxField)
 {
     for (auto & row : boxField.field) {

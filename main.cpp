@@ -45,6 +45,10 @@ int main()
                     boxField.press(sf::Vector2u(event.mouseButton.x,
                                                 event.mouseButton.y));
                 }
+                else if (event.mouseButton.button == sf::Mouse::Right)
+                {
+                    boxField.reset();
+                }
                 break;
             default:
                 break;

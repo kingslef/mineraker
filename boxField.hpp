@@ -22,6 +22,8 @@ public:
 
     void press(const sf::Vector2u & position);
 
+    void reset();
+
     friend std::ostream & operator<<(std::ostream & out, const BoxField & field);
 
     struct Box {
