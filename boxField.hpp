@@ -45,6 +45,12 @@ private:
     sf::Texture pressed_box_texture;
     sf::Texture mine_texture;
 
+    std::size_t width;
+    std::size_t height;
+
+    std::size_t box_width;
+    std::size_t box_height;
+
     std::vector<std::vector<BoxField::Box>> field;
 };
 

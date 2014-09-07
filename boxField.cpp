@@ -12,8 +12,8 @@ BoxField::BoxField(const char * box_texture_file,
                    const char * pressed_box_texture_file,
                    const char * mine_texture_file,
                    unsigned int mines,
-                   unsigned int width,
-                   unsigned int height)
+                   unsigned int w,
+                   unsigned int h) : width(w), height(h)
 {
     if (!box_texture.loadFromFile(box_texture_file)) {
         throw std::invalid_argument("Couldn't open the box texture");
@@ -37,6 +37,9 @@ BoxField::BoxField(const char * box_texture_file,
     pressed_box_sprite.setScale(sf::Vector2f(.2f, .2f));
     mine_sprite.setScale(sf::Vector2f(.2f, .2f));
 
+    box_height = box_sprite.getGlobalBounds().height;
+    box_width = box_sprite.getGlobalBounds().width;
+
     std::default_random_engine generator(std::random_device{}());
     std::uniform_int_distribution<int> distribution(0,1);
 
@@ -57,12 +60,9 @@ BoxField::BoxField(const char * box_texture_file,
 
 void BoxField::draw(sf::RenderWindow & window)
 {
-    float height = box_sprite.getGlobalBounds().height;
-    float width = box_sprite.getGlobalBounds().width;
-
     for (auto & row : field) {
         for (auto & box : row) {
-            sf::Vector2f pos(box.position.x * width, box.position.y * height);
+            sf::Vector2f pos(box.position.x * box_width, box.position.y * box_height);
             sf::Sprite sprite;
             if (box.mine && box.pressed) {
                 sprite = mine_sprite;
@@ -80,14 +80,15 @@ void BoxField::draw(sf::RenderWindow & window)
 
 void BoxField::press(const sf::Vector2u & position)
 {
-    unsigned int height = box_sprite.getGlobalBounds().height;
-    unsigned int width = box_sprite.getGlobalBounds().width;
-
-    unsigned int x = position.x / width
-        + (position.x % width ? 1 : 0)
+    /*
+     * Calculate to which box is pressed with given position. E.g. if position.x
+     * is somewhere between [0,1), then pressed box should be in first column.
+     */
+    unsigned int x = position.x / box_width
+        + (position.x % box_width ? 1 : 0)
         - 1;
-    unsigned int y = position.y / height
-        + (position.y % height ? 1 : 0)
+    unsigned int y = position.y / box_height
+        + (position.y % box_height ? 1 : 0)
         - 1;
 
     std::cout << "box: (" << x << "," << y << ")" << std::endl;
