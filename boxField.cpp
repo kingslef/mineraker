@@ -11,6 +11,7 @@ std::ostream & operator<<(std::ostream & out, const BoxField::Box & box)
 BoxField::BoxField(const char * box_texture_file,
                    const char * pressed_box_texture_file,
                    const char * mine_texture_file,
+                   const char * pressed_mine_texture_file,
                    unsigned int mines,
                    unsigned int w,
                    unsigned int h) : width(w), height(h)
@@ -28,14 +29,20 @@ BoxField::BoxField(const char * box_texture_file,
         throw std::invalid_argument("Couldn't open the mine texture");
     }
 
+    if (!pressed_mine_texture.loadFromFile(pressed_mine_texture_file)) {
+        throw std::invalid_argument("Couldn't open the pressed mine texture");
+    }
+
     box_sprite.setTexture(box_texture);
     pressed_box_sprite.setTexture(pressed_box_texture);
     mine_sprite.setTexture(mine_texture);
+    pressed_mine_sprite.setTexture(pressed_mine_texture);
 
     // FIXME: remove scaling
     box_sprite.setScale(sf::Vector2f(.2f, .2f));
     pressed_box_sprite.setScale(sf::Vector2f(.2f, .2f));
     mine_sprite.setScale(sf::Vector2f(.2f, .2f));
+    pressed_mine_sprite.setScale(sf::Vector2f(.2f, .2f));
 
     box_height = box_sprite.getGlobalBounds().height;
     box_width = box_sprite.getGlobalBounds().width;
@@ -65,7 +72,7 @@ void BoxField::draw(sf::RenderWindow & window)
             sf::Vector2f pos(box.position.x * box_width, box.position.y * box_height);
             sf::Sprite sprite;
             if (box.mine && box.pressed) {
-                sprite = mine_sprite;
+                sprite = pressed_mine_sprite;
             } else if (box.pressed) {
                 sprite = pressed_box_sprite;
             } else {

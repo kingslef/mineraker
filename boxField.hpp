@@ -13,6 +13,7 @@ public:
     BoxField(const char * box_texture_file,
              const char * pressed_box_texture_file,
              const char * mine_texture_file,
+             const char * pressed_mine_texture_file,
              unsigned int mines,
              unsigned int width,
              unsigned int height);
@@ -40,10 +41,12 @@ private:
     sf::Sprite box_sprite;
     sf::Sprite pressed_box_sprite;
     sf::Sprite mine_sprite;
+    sf::Sprite pressed_mine_sprite;
 
     sf::Texture box_texture;
     sf::Texture pressed_box_texture;
     sf::Texture mine_texture;
+    sf::Texture pressed_mine_texture;
 
     std::size_t width;
     std::size_t height;
