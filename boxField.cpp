@@ -93,7 +93,69 @@ void BoxField::press(const sf::Vector2u & position)
 
     std::cout << "box: (" << x << "," << y << ")" << std::endl;
 
-    field[x][y].pressed = !field[x][y].pressed;
+    // This shouldn't be possible
+    if (x >= width || y >= height) {
+        throw std::invalid_argument("Invalid press location");
+    }
+
+    auto & box = field[x][y];
+
+    //box.pressed = true;
+
+    if (!box.mine) {
+        // If user didn't press a mine, press all adjacent non-mine boxes.
+        // FIXME: ugly
+        for (int j = y; j >= 0; j--) {
+            auto & adj_box = field[x][j];
+            if (adj_box.mine || adj_box.pressed) {
+                break;
+            }
+            adj_box.pressed = true;
+
+
+            for (int i = x + 1; i < width; i++) {
+                auto & adj_box = field[i][j];
+                if (adj_box.mine || adj_box.pressed) {
+                    break;
+                }
+                adj_box.pressed = true;
+            }
+
+            for (int i = x - 1; i >= 0; i--) {
+                auto & adj_box = field[i][j];
+                if (adj_box.mine || adj_box.pressed) {
+                    break;
+                }
+                adj_box.pressed = true;
+            }
+        }
+
+        for (int j = y + 1; j < height; j++) {
+            auto & adj_box = field[x][j];
+            if (adj_box.mine || adj_box.pressed) {
+                break;
+            }
+            adj_box.pressed = true;
+
+            for (int i = x + 1; i < width; i++) {
+                auto & adj_box = field[i][j];
+                if (adj_box.mine || adj_box.pressed) {
+                    break;
+                }
+                adj_box.pressed = true;
+            }
+
+            for (int i = x - 1; i >= 0; i--) {
+                auto & adj_box = field[i][j];
+                if (adj_box.mine || adj_box.pressed) {
+                    break;
+                }
+                adj_box.pressed = true;
+            }
+        }
+    } else {
+        box.pressed = true;
+    }
 }
 
 std::ostream & operator<<(std::ostream & out, const BoxField & boxField)
