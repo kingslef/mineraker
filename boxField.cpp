@@ -12,9 +12,7 @@ BoxField::BoxField(const char * box_texture_file,
                    const char * pressed_box_texture_file,
                    const char * mine_texture_file,
                    const char * pressed_mine_texture_file,
-                   unsigned int mines,
-                   unsigned int w,
-                   unsigned int h) : width(w), height(h)
+                   unsigned int mines, unsigned int w, unsigned int h)
 {
     if (!box_texture.loadFromFile(box_texture_file)) {
         throw std::invalid_argument("Couldn't open the box texture");
@@ -46,6 +44,9 @@ BoxField::BoxField(const char * box_texture_file,
 
     box_height = box_sprite.getGlobalBounds().height;
     box_width = box_sprite.getGlobalBounds().width;
+
+    width = w / box_width;
+    height = h / box_height;
 
     std::default_random_engine generator(std::random_device{}());
     std::uniform_int_distribution<int> distribution(0,1);

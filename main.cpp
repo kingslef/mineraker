@@ -8,20 +8,9 @@ int main()
     sf::RenderWindow window(sf::VideoMode(800, 600), "Minerake",
                             sf::Style::Titlebar | sf::Style::Close);
 
-    sf::Texture texture;
-    if (!texture.loadFromFile("box.png"))
-    {
-        return -1;
-    }
-
-    sf::Sprite sprite;
-    sprite.setTexture(texture);
-    sprite.setScale(sf::Vector2f(0.2f, .2f));
-
-    BoxField boxField("box.png", "box_pressed.png", "mine.png",
-                      "mine_pressed.png", 250,
-                      window.getSize().x / sprite.getGlobalBounds().width,
-                      window.getSize().y / sprite.getGlobalBounds().height);
+    BoxField boxField("box.png", "box_pressed.png",
+                      "mine.png", "mine_pressed.png", 250,
+                      window.getSize().x, window.getSize().y);
 
     window.setVerticalSyncEnabled(true);
 
