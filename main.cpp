@@ -18,7 +18,7 @@ int main()
     sprite.setTexture(texture);
     sprite.setScale(sf::Vector2f(0.2f, .2f));
 
-    BoxField boxField("box.png", "box_pressed.png",
+    BoxField boxField("box.png", "box_pressed.png", "mine.png", 25,
                       window.getSize().x / sprite.getGlobalBounds().width,
                       window.getSize().y / sprite.getGlobalBounds().height);
 
