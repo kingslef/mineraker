@@ -118,8 +118,11 @@ BoxField::BoxField(const char * box_texture_file,
         field.push_back(row);
     }
 
-    // FIXME: move to a function.
-    // Calculate how many mines a touching each box.
+    calculateTouchingMines();
+}
+
+void BoxField::calculateTouchingMines()
+{
     for (unsigned int i = 0; i < width; i++) {
         for (unsigned int j = 0; j < height; j++) {
             auto & box = field[i][j];
@@ -214,7 +217,7 @@ void BoxField::mark(const sf::Vector2u & position)
     }
 }
 
-void BoxField::box_pressed(int x, int y)
+void BoxField::pressAdjacent(int x, int y)
 {
     if (x < 0 || y < 0 || x >= width || y >= height) {
         return;
@@ -228,10 +231,10 @@ void BoxField::box_pressed(int x, int y)
     box.pressed = true;
 
     /* Try to press all adjacent boxes, but not diagonally adjacent. */
-    box_pressed(x - 1, y);
-    box_pressed(x, y - 1);
-    box_pressed(x + 1, y);
-    box_pressed(x, y + 1);
+    pressAdjacent(x - 1, y);
+    pressAdjacent(x, y - 1);
+    pressAdjacent(x + 1, y);
+    pressAdjacent(x, y + 1);
 }
 
 void BoxField::press(const sf::Vector2u & position)
@@ -249,7 +252,7 @@ void BoxField::press(const sf::Vector2u & position)
         auto & box = field[box_pos.x][box_pos.y];
 
         if (!box.mine) {
-            box_pressed(box_pos.x, box_pos.y);
+            pressAdjacent(box_pos.x, box_pos.y);
         } else {
             box.pressed = true;
             game_over = true;

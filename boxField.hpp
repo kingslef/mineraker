@@ -50,7 +50,8 @@ public:
 private:
 
     const sf::Vector2u calculatePressedBox(const sf::Vector2u & position) const;
-    void box_pressed(int x, int y);
+    void pressAdjacent(int x, int y);
+    void calculateTouchingMines();
 
     sf::Sprite box_sprite;
     sf::Sprite pressed_box_sprite;
