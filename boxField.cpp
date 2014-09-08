@@ -114,19 +114,35 @@ void BoxField::setupMines()
 {
     std::default_random_engine generator(std::random_device{}());
     std::uniform_int_distribution<int> distribution(0,1);
+    std::uniform_int_distribution<int> distribution_per_row(0,3);
 
     unsigned int mines_set = 0;
 
+    /* Try to divide roughly same amount of mines for each row so first rows are
+     * not so packed. */
+    unsigned int mines_per_row = mines_amount / field.size()
+        + (mines_amount % field.size() ? 1 : 0);
+
     for (auto & row : field) {
+        unsigned int mines_set_per_row = 0;
+
+        /* Random variable when setting mines per row so player cannot assume
+         * that every row has same amount of mines.
+         */
+        unsigned int mines_per_row_rand = mines_per_row
+            + distribution_per_row(generator);
+
         for (auto & box : row) {
-            if (box.pressed) {
+            if (box.pressed || mines_set_per_row == mines_per_row_rand) {
                 continue;
             }
 
-            bool is_mine = mines_set != mines_amount ? distribution(generator) : false;
+            bool is_mine = mines_set != mines_amount ?
+                distribution(generator) : false;
             if (is_mine) {
                 box.mine = true;
                 mines_set++;
+                mines_set_per_row++;
             }
         }
     }
