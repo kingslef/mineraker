@@ -5,7 +5,7 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Minerake",
+    sf::RenderWindow window(sf::VideoMode(800, 600), "Mineraker",
                             sf::Style::Titlebar | sf::Style::Close);
 
     BoxField boxField(20, window.getSize().x, window.getSize().y);
