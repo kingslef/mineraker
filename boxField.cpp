@@ -48,37 +48,35 @@ sf::Text BoxField::Box::boxDigit(const std::array<sf::Color, 9> & colors,
     return text;
 }
 
-BoxField::BoxField(const char * box_texture_file,
-                   const char * pressed_box_texture_file,
-                   const char * mine_texture_file,
-                   const char * pressed_mine_texture_file,
-                   const char * flag_texture_file,
-                   const char * font_file,
-                   unsigned int mines, unsigned int w, unsigned int h)
+BoxField::BoxField(unsigned int mines, unsigned int w, unsigned int h)
     : mines_amount(mines)
 {
-    if (!box_texture.loadFromFile(box_texture_file)) {
+    if (!box_texture.loadFromFile("textures/box.png")) {
         throw std::invalid_argument("Couldn't open the box texture");
     }
 
-    if (!pressed_box_texture.loadFromFile(pressed_box_texture_file)) {
+    if (!pressed_box_texture.loadFromFile("textures/box_pressed.png")) {
         throw std::invalid_argument("Couldn't open the pressed box "
                                     "texture");
     }
 
-    if (!mine_texture.loadFromFile(mine_texture_file)) {
+    if (!mine_texture.loadFromFile("textures/mine.png")) {
         throw std::invalid_argument("Couldn't open the mine texture");
     }
 
-    if (!pressed_mine_texture.loadFromFile(pressed_mine_texture_file)) {
+    if (!pressed_mine_texture.loadFromFile("textures/mine_pressed.png")) {
         throw std::invalid_argument("Couldn't open the pressed mine texture");
     }
 
-    if (!flag_texture.loadFromFile(flag_texture_file)) {
+    if (!flagged_mine_texture.loadFromFile("textures/mine_flagged.png")) {
+        throw std::invalid_argument("Couldn't open the flagged mine texture");
+    }
+
+    if (!flag_texture.loadFromFile("textures/flag.png")) {
         throw std::invalid_argument("Couldn't open the flag texture");
     }
 
-    if (!digit_font.loadFromFile(font_file)) {
+    if (!digit_font.loadFromFile("textures/arial.ttf")) {
         throw std::invalid_argument("Couldn't open the font");
     }
 
@@ -86,6 +84,7 @@ BoxField::BoxField(const char * box_texture_file,
     pressed_box_sprite.setTexture(pressed_box_texture);
     mine_sprite.setTexture(mine_texture);
     pressed_mine_sprite.setTexture(pressed_mine_texture);
+    flagged_mine_sprite.setTexture(flagged_mine_texture);
     flag_sprite.setTexture(flag_texture);
 
     // FIXME: remove scaling
@@ -93,6 +92,7 @@ BoxField::BoxField(const char * box_texture_file,
     pressed_box_sprite.setScale(sf::Vector2f(.2f, .2f));
     mine_sprite.setScale(sf::Vector2f(.2f, .2f));
     pressed_mine_sprite.setScale(sf::Vector2f(.2f, .2f));
+    flagged_mine_sprite.setScale(sf::Vector2f(.2f, .2f));
     flag_sprite.setScale(sf::Vector2f(.2f, .2f));
 
     box_height = box_sprite.getGlobalBounds().height;
@@ -186,17 +186,20 @@ void BoxField::draw(sf::RenderWindow & window)
                 sprite = pressed_mine_sprite;
             } else if (box.pressed) {
                 sprite = pressed_box_sprite;
-            } else if (box.marked && !box.pressed) {
+            } else if (box.flagged && !box.pressed) {
                 sprite = flag_sprite;
             } else {
                 sprite = box_sprite;
             }
 
             // If game is over, show all mines
-            // FIXME: this forgets marked boxes
             if (game_over) {
                 if (box.mine && !box.pressed) {
-                    sprite = mine_sprite;
+                    if (box.flagged) {
+                        sprite = flagged_mine_sprite;
+                    } else {
+                        sprite = mine_sprite;
+                    }
                 }
             }
 
@@ -242,7 +245,7 @@ void BoxField::mark(const sf::Vector2u & position)
         }
 
         auto & box = field[box_pos.x][box_pos.y];
-        box.marked = !box.marked;
+        box.flagged = !box.flagged;
     }
 }
 
@@ -308,7 +311,7 @@ bool BoxField::checkIfWon()
 {
     for (auto & row : field) {
         for (auto & box : row) {
-            if (box.mine && !box.marked) {
+            if (box.mine && !box.flagged) {
                 return false;
             }
 
@@ -327,7 +330,7 @@ void BoxField::reset()
         for (auto & row : field) {
             for (auto & box : row) {
                 box.pressed = false;
-                box.marked = false;
+                box.flagged = false;
                 box.mine = false;
                 box.mines_touching = 0;
             }

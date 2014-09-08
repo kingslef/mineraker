@@ -11,15 +11,7 @@
 class BoxField {
 
 public:
-    BoxField(const char * box_texture_file,
-             const char * pressed_box_texture_file,
-             const char * mine_texture_file,
-             const char * pressed_mine_texture_file,
-             const char * flag_texture_file,
-             const char * font_file,
-             unsigned int mines,
-             unsigned int width,
-             unsigned int height);
+    BoxField(unsigned int mines, unsigned int width, unsigned int height);
 
     void draw(sf::RenderWindow & window);
     void press(const sf::Vector2u & position);
@@ -43,7 +35,7 @@ public:
         sf::Vector2u position;
         bool pressed = false;
         bool mine = false;
-        bool marked = false;
+        bool flagged = false;
         unsigned int mines_touching = 0;
     };
 
@@ -59,12 +51,14 @@ private:
     sf::Sprite pressed_box_sprite;
     sf::Sprite mine_sprite;
     sf::Sprite pressed_mine_sprite;
+    sf::Sprite flagged_mine_sprite;
     sf::Sprite flag_sprite;
 
     sf::Texture box_texture;
     sf::Texture pressed_box_texture;
     sf::Texture mine_texture;
     sf::Texture pressed_mine_texture;
+    sf::Texture flagged_mine_texture;
     sf::Texture flag_texture;
 
     unsigned int mines_amount;
