@@ -205,6 +205,26 @@ void BoxField::mark(const sf::Vector2u & position)
     }
 }
 
+void BoxField::box_pressed(int x, int y)
+{
+    if (x < 0 || y < 0 || x >= width || y >= height) {
+        return;
+    }
+
+    auto & box = field[x][y];
+    if (box.mine || box.pressed) {
+        return;
+    }
+
+    box.pressed = true;
+
+    /* Try to press all adjacent boxes, but not diagonally adjacent. */
+    box_pressed(x - 1, y);
+    box_pressed(x, y - 1);
+    box_pressed(x + 1, y);
+    box_pressed(x, y + 1);
+}
+
 void BoxField::press(const sf::Vector2u & position)
 {
     if (!game_over) {
@@ -220,56 +240,7 @@ void BoxField::press(const sf::Vector2u & position)
         auto & box = field[box_pos.x][box_pos.y];
 
         if (!box.mine) {
-            // If user didn't press a mine, press all adjacent non-mine boxes.
-            // FIXME: ugly
-            for (int j = box_pos.y; j >= 0; j--) {
-                auto & adj_box = field[box_pos.x][j];
-                if (adj_box.mine || adj_box.pressed) {
-                    break;
-                }
-                adj_box.pressed = true;
-
-
-                for (int i = box_pos.x + 1; i < width; i++) {
-                    auto & adj_box = field[i][j];
-                    if (adj_box.mine || adj_box.pressed) {
-                        break;
-                    }
-                    adj_box.pressed = true;
-                }
-
-                for (int i = box_pos.x - 1; i >= 0; i--) {
-                    auto & adj_box = field[i][j];
-                    if (adj_box.mine || adj_box.pressed) {
-                        break;
-                    }
-                    adj_box.pressed = true;
-                }
-            }
-
-            for (int j = box_pos.y + 1; j < height; j++) {
-                auto & adj_box = field[box_pos.x][j];
-                if (adj_box.mine || adj_box.pressed) {
-                    break;
-                }
-                adj_box.pressed = true;
-
-                for (int i = box_pos.x + 1; i < width; i++) {
-                    auto & adj_box = field[i][j];
-                    if (adj_box.mine || adj_box.pressed) {
-                        break;
-                    }
-                    adj_box.pressed = true;
-                }
-
-                for (int i = box_pos.x - 1; i >= 0; i--) {
-                    auto & adj_box = field[i][j];
-                    if (adj_box.mine || adj_box.pressed) {
-                        break;
-                    }
-                    adj_box.pressed = true;
-                }
-            }
+            box_pressed(box_pos.x, box_pos.y);
         } else {
             box.pressed = true;
             game_over = true;
