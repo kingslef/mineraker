@@ -51,6 +51,7 @@ private:
 
     const sf::Vector2u calculatePressedBox(const sf::Vector2u & position) const;
     void pressAdjacent(int x, int y);
+    void setupMines();
     void calculateTouchingMines();
 
     sf::Sprite box_sprite;
@@ -64,6 +65,8 @@ private:
     sf::Texture mine_texture;
     sf::Texture pressed_mine_texture;
     sf::Texture flag_texture;
+
+    unsigned int mines_amount;
 
     sf::Font digit_font;
     std::array<sf::Color, 9> digit_colors = { {
@@ -88,6 +91,7 @@ private:
     std::vector<std::vector<BoxField::Box>> field;
 
     bool game_over = false;
+    bool is_mines_set = false;
 };
 
 #endif

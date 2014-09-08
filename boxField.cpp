@@ -55,6 +55,7 @@ BoxField::BoxField(const char * box_texture_file,
                    const char * flag_texture_file,
                    const char * font_file,
                    unsigned int mines, unsigned int w, unsigned int h)
+    : mines_amount(mines)
 {
     if (!box_texture.loadFromFile(box_texture_file)) {
         throw std::invalid_argument("Couldn't open the box texture");
@@ -100,25 +101,37 @@ BoxField::BoxField(const char * box_texture_file,
     width = w / box_width;
     height = h / box_height;
 
-    std::default_random_engine generator(std::random_device{}());
-    std::uniform_int_distribution<int> distribution(0,1);
-
     for (unsigned int i = 0; i < width; i++) {
         std::vector<Box> row;
         for (unsigned int j = 0; j < height; j++) {
-            // FIXME: move to a function
-            bool is_mine = mines ? distribution(generator) : false;
-            if (is_mine) {
-                std::cout << "mine in (" << i << "," << j << ")" << std::endl;
-                mines--;
-            }
-
-            row.push_back(Box(i, j, is_mine));
+            row.push_back(Box(i, j));
         }
         field.push_back(row);
     }
+}
 
-    calculateTouchingMines();
+void BoxField::setupMines()
+{
+    std::default_random_engine generator(std::random_device{}());
+    std::uniform_int_distribution<int> distribution(0,1);
+
+    unsigned int mines_set = 0;
+
+    for (auto & row : field) {
+        for (auto & box : row) {
+            if (box.pressed) {
+                continue;
+            }
+
+            bool is_mine = mines_set != mines_amount ? distribution(generator) : false;
+            if (is_mine) {
+                box.mine = true;
+                mines_set++;
+            }
+        }
+    }
+
+    is_mines_set = true;
 }
 
 void BoxField::calculateTouchingMines()
@@ -251,6 +264,18 @@ void BoxField::press(const sf::Vector2u & position)
 
         auto & box = field[box_pos.x][box_pos.y];
 
+        if (!is_mines_set) {
+            /* If mines are not set, this is the first press so we can setup the
+             * mines now. If we would have done it earlier, game could be over
+             * on first press which isn't very nice.
+             */
+            // FIXME: hack
+            box.pressed = true;
+            setupMines();
+            box.pressed = false;
+            calculateTouchingMines();
+        }
+
         if (!box.mine) {
             pressAdjacent(box_pos.x, box_pos.y);
         } else {
@@ -267,9 +292,12 @@ void BoxField::reset()
             for (auto & box : row) {
                 box.pressed = false;
                 box.marked = false;
+                box.mine = false;
+                box.mines_touching = 0;
             }
         }
 
+        is_mines_set = false;
         game_over = false;
     }
 }
