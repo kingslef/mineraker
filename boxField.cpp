@@ -251,7 +251,7 @@ void BoxField::mark(const sf::Vector2u & position)
 
 void BoxField::pressAdjacent(int x, int y)
 {
-    if (x < 0 || y < 0 || x >= width || y >= height) {
+    if (x < 0 || y < 0 || (unsigned int)x >= width || (unsigned int)y >= height) {
         return;
     }
 
