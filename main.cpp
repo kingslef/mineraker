@@ -8,7 +8,7 @@ int main()
     sf::RenderWindow window(sf::VideoMode(800, 600), "Mineraker",
                             sf::Style::Titlebar | sf::Style::Close);
 
-    BoxField boxField(20, window.getSize().x, window.getSize().y);
+    BoxField boxField(200, window.getSize().x, window.getSize().y);
 
     window.setVerticalSyncEnabled(true);
 
