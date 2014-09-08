@@ -266,9 +266,8 @@ void BoxField::press(const sf::Vector2u & position)
     if (!game_over) {
         const sf::Vector2u & box_pos = calculatePressedBox(position);
 
-        // This shouldn't be possible
         if (box_pos.x >= width || box_pos.y >= height) {
-            throw std::invalid_argument("Invalid press location");
+            return;
         }
 
         auto & box = field[box_pos.x][box_pos.y];
