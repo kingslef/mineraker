@@ -8,6 +8,46 @@ std::ostream & operator<<(std::ostream & out, const BoxField::Box & box)
     return out;
 }
 
+namespace {
+    // FIXME: not the best way to do this
+    const char * mines_to_text(unsigned int mines)
+    {
+        switch(mines) {
+        case 8:
+            return "8";
+        case 7:
+            return "7";
+        case 6:
+            return "6";
+        case 5:
+            return "5";
+        case 4:
+            return "4";
+        case 3:
+            return "3";
+        case 2:
+            return "2";
+        case 1:
+            return "1";
+        case 0:
+            return "";
+        default:
+            return "x";
+        }
+    }
+}
+
+sf::Text BoxField::Box::boxDigit(const std::array<sf::Color, 9> & colors,
+                  const sf::Font & font) const
+{
+    // FIXME: set default font size somewhere
+    sf::Text text(mines_to_text(mines_touching), font, 20);
+    if (mines_touching < colors.size()) {
+        text.setColor(colors[mines_touching]);
+    }
+    return text;
+}
+
 BoxField::BoxField(const char * box_texture_file,
                    const char * pressed_box_texture_file,
                    const char * mine_texture_file,
@@ -37,7 +77,7 @@ BoxField::BoxField(const char * box_texture_file,
         throw std::invalid_argument("Couldn't open the flag texture");
     }
 
-    if (!font.loadFromFile(font_file)) {
+    if (!digit_font.loadFromFile(font_file)) {
         throw std::invalid_argument("Couldn't open the font");
     }
 
@@ -104,35 +144,6 @@ BoxField::BoxField(const char * box_texture_file,
     }
 }
 
-namespace {
-    // FIXME: not the best way to do this
-    const char * mines_to_text(unsigned int mines)
-    {
-        switch(mines) {
-        case 8:
-            return "8";
-        case 7:
-            return "7";
-        case 6:
-            return "6";
-        case 5:
-            return "5";
-        case 4:
-            return "4";
-        case 3:
-            return "3";
-        case 2:
-            return "2";
-        case 1:
-            return "1";
-        case 0:
-            return "";
-        default:
-            return "x";
-        }
-    }
-}
-
 void BoxField::draw(sf::RenderWindow & window)
 {
     for (auto & row : field) {
@@ -161,9 +172,7 @@ void BoxField::draw(sf::RenderWindow & window)
             window.draw(sprite);
 
             if (box.pressed && !box.mine) {
-                // FIXME: set default font size somewhere
-                sf::Text text(mines_to_text(box.mines_touching), font, 20);
-                text.setColor(sf::Color::Black);
+                sf::Text text = box.boxDigit(digit_colors, digit_font);
                 // Text is not quite centered so it has to be moved a little
                 text.setPosition(pos - sf::Vector2f(-4, 3));
                 window.draw(text);
