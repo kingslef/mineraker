@@ -25,10 +25,6 @@ int main()
             case sf::Event::MouseButtonPressed:
                 if (event.mouseButton.button == sf::Mouse::Left)
                 {
-                    std::cout << "the left button was pressed on ("
-                              << event.mouseButton.x << ","
-                              << event.mouseButton.y << ")" << std::endl;
-
                     boxField.press(sf::Vector2u(event.mouseButton.x,
                                                 event.mouseButton.y));
                     boxField.checkIfWon();

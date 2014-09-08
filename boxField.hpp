@@ -20,8 +20,6 @@ public:
     bool isOver() const;
     bool checkIfWon();
 
-    friend std::ostream & operator<<(std::ostream & out, const BoxField & field);
-
     struct Box {
         Box(const sf::Vector2u & pos, bool is_mine=false)
             : position(pos), mine(is_mine) {}
@@ -30,8 +28,6 @@ public:
 
         sf::Text boxDigit(const std::array<sf::Color, 9> & colors,
                           const sf::Font & font) const;
-
-        friend std::ostream & operator<<(std::ostream & out, const Box & box);
 
         sf::Vector2u position;
         bool pressed = false;

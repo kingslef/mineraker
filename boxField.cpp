@@ -2,12 +2,6 @@
 
 #include <random>
 
-std::ostream & operator<<(std::ostream & out, const BoxField::Box & box)
-{
-    out << "(" << box.position.x << ", " << box.position.y << ")";
-    return out;
-}
-
 namespace {
     // FIXME: not the best way to do this
     const char * mines_to_text(unsigned int mines)
@@ -237,8 +231,6 @@ void BoxField::mark(const sf::Vector2u & position)
     if (!game_over) {
         const sf::Vector2u & box_pos = calculatePressedBox(position);
 
-        std::cout << "box: (" << box_pos.x << "," << box_pos.y << ")" << std::endl;
-
         // This shouldn't be possible
         if (box_pos.x >= width || box_pos.y >= height) {
             throw std::invalid_argument("Invalid press location");
@@ -274,8 +266,6 @@ void BoxField::press(const sf::Vector2u & position)
     if (!game_over) {
         const sf::Vector2u & box_pos = calculatePressedBox(position);
 
-        std::cout << "box: (" << box_pos.x << "," << box_pos.y << ")" << std::endl;
-
         // This shouldn't be possible
         if (box_pos.x >= width || box_pos.y >= height) {
             throw std::invalid_argument("Invalid press location");
@@ -309,18 +299,15 @@ bool BoxField::checkIfWon()
     for (auto & row : field) {
         for (auto & box : row) {
             if (box.mine && !box.flagged) {
-                std::cout << "found unflagged mine" << std::endl;
                 return false;
             }
 
             if (!box.mine && !box.pressed) {
-                std::cout << "found unpressed box" << std::endl;
                 return false;
             }
         }
     }
 
-    std::cout << "All mines are flagged and boxes without mines are pressed!" << std::endl;
     game_over = true;
     return true;
 }
@@ -345,16 +332,4 @@ void BoxField::reset()
 bool BoxField::isOver() const
 {
     return game_over;
-}
-
-std::ostream & operator<<(std::ostream & out, const BoxField & boxField)
-{
-    for (auto & row : boxField.field) {
-        for (auto & box : row) {
-            out << box << ", ";
-        }
-        out << std::endl;
-    }
-
-    return out;
 }
