@@ -88,11 +88,11 @@ BoxField::BoxField(const char * box_texture_file,
             }
 
             for (int x = -1; x <= 1; x++) {
-                if (i == 0 || i + x >= width) {
+                if ((i == 0 && x == -1 ) || i + x >= width) {
                     continue;
                 }
                 for (int y = -1; y <= 1; y++) {
-                    if (j == 0 || j + y >= height) {
+                    if ((j == 0 && y == - 1) || j + y >= height) {
                         continue;
                     }
                     if (field[i + x][j + y].mine) {
