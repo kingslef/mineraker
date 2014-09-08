@@ -31,6 +31,7 @@ int main()
 
                     boxField.press(sf::Vector2u(event.mouseButton.x,
                                                 event.mouseButton.y));
+                    boxField.checkIfWon();
                 }
                 else if (event.mouseButton.button == sf::Mouse::Right)
                 {
@@ -39,6 +40,7 @@ int main()
                     } else {
                         boxField.mark(sf::Vector2u(event.mouseButton.x,
                                                    event.mouseButton.y));
+                        boxField.checkIfWon();
                     }
                 }
                 break;

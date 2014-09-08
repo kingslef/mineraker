@@ -297,9 +297,6 @@ void BoxField::press(const sf::Vector2u & position)
 
         if (!box.mine) {
             pressAdjacent(box_pos.x, box_pos.y);
-            if (checkIfWon()) {
-                game_over = true;
-            }
         } else {
             box.pressed = true;
             game_over = true;
@@ -312,15 +309,19 @@ bool BoxField::checkIfWon()
     for (auto & row : field) {
         for (auto & box : row) {
             if (box.mine && !box.flagged) {
+                std::cout << "found unflagged mine" << std::endl;
                 return false;
             }
 
             if (!box.mine && !box.pressed) {
+                std::cout << "found unpressed box" << std::endl;
                 return false;
             }
         }
     }
 
+    std::cout << "All mines are flagged and boxes without mines are pressed!" << std::endl;
+    game_over = true;
     return true;
 }
 

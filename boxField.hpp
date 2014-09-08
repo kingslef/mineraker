@@ -18,6 +18,7 @@ public:
     void mark(const sf::Vector2u & position);
     void reset();
     bool isOver() const;
+    bool checkIfWon();
 
     friend std::ostream & operator<<(std::ostream & out, const BoxField & field);
 
@@ -45,7 +46,6 @@ private:
     void pressAdjacent(int x, int y);
     void setupMines();
     void calculateTouchingMines();
-    bool checkIfWon();
 
     sf::Sprite box_sprite;
     sf::Sprite pressed_box_sprite;
