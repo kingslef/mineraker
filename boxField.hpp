@@ -53,6 +53,7 @@ private:
     void pressAdjacent(int x, int y);
     void setupMines();
     void calculateTouchingMines();
+    bool checkIfWon();
 
     sf::Sprite box_sprite;
     sf::Sprite pressed_box_sprite;

@@ -294,11 +294,31 @@ void BoxField::press(const sf::Vector2u & position)
 
         if (!box.mine) {
             pressAdjacent(box_pos.x, box_pos.y);
+            if (checkIfWon()) {
+                game_over = true;
+            }
         } else {
             box.pressed = true;
             game_over = true;
         }
     }
+}
+
+bool BoxField::checkIfWon()
+{
+    for (auto & row : field) {
+        for (auto & box : row) {
+            if (box.mine && !box.marked) {
+                return false;
+            }
+
+            if (!box.mine && !box.pressed) {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 void BoxField::reset()
