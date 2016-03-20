@@ -1,6 +1,8 @@
 Mineraker
 =========
 
+**Moved to https://gitlab.com/aatos/mineraker**
+
 A minesweeper clone using SFML 2.1.
 
 ![Screenshot](http://i.imgur.com/IX9TPW5.png)
